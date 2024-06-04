@@ -29,7 +29,7 @@ const Login = () => {
         console.log('Progress:', progress);
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
-        navigate('/discovery');
+        navigate(`/discovery`);
       } else {
         setError('Invalid credentials. Please try again.');
       }

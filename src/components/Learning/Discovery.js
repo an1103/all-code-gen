@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import './Discovery.css';
+import Navbar from '../Navbar/Navbar';
 
 const Discovery = () => {
   const [storyDetails, setStoryDetails] = useState(null);
@@ -12,6 +13,8 @@ const Discovery = () => {
   const [feedback, setFeedback] = useState('');
   const [audioRecorder, setAudioRecorder] = useState(null);
   const [apiResponse, setApiResponse] = useState('');
+
+  const username = localStorage.getItem('username');
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
@@ -121,32 +124,35 @@ const Discovery = () => {
   }
 
   return (
-    <div className="discovery-container">
-      <h2>Discovery</h2>
-      {currentLineIndex < storyDetails.lines.length && (
-        <div className="story-card">
-          <p>{storyDetails.lines[currentLineIndex].text}</p>
-        </div>
-      )}
-      <div className="controls">
-        <button onClick={handleNextLine} disabled={!apiResponse || isRecording || currentLineIndex === storyDetails.lines.length - 1}>
-          Next Line
-        </button>
-        <button onClick={handleRetryLine} disabled={isRecording}>
-          Retry
-        </button>
-        {isRecording ? (
-          <button onClick={handleStopRecording}>Stop Recording</button>
-        ) : (
-          <button onClick={handleStartRecording}>Start Recording</button>
+    <div>
+      <Navbar username={username} />
+      <div className="discovery-container">
+        <h2>Discovery</h2>
+        {currentLineIndex < storyDetails.lines.length && (
+          <div className="story-card">
+            <p>{storyDetails.lines[currentLineIndex].text}</p>
+          </div>
         )}
-        <button onClick={handleSubmitRecording} disabled={!recordedAudio}>
-          Submit Recording
-        </button>
+        <div className="controls">
+          <button onClick={handleNextLine} disabled={!apiResponse || isRecording || currentLineIndex === storyDetails.lines.length - 1}>
+            Next Line
+          </button>
+          <button onClick={handleRetryLine} disabled={isRecording}>
+            Retry
+          </button>
+          {isRecording ? (
+            <button onClick={handleStopRecording}>Stop Recording</button>
+          ) : (
+            <button onClick={handleStartRecording}>Start Recording</button>
+          )}
+          <button onClick={handleSubmitRecording} disabled={!recordedAudio}>
+            Submit Recording
+          </button>
+        </div>
+        {feedback && <div className="feedback">{feedback}</div>}
+        {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}
+        {apiResponse && <div className="api-response">{apiResponse}</div>}
       </div>
-      {feedback && <div className="feedback">{feedback}</div>}
-      {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}
-      {apiResponse && <div className="api-response">{apiResponse}</div>}
     </div>
   );
 };
