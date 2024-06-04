@@ -23,21 +23,12 @@ const Login = () => {
     try {
       const response = await api.login(username, password);
       if (response.success) {
-        // Notify user of successful login
         alert('Login successful!');
-        
-        // Track telemetry for the current session
         api.trackSession();
-
-        // Fetch lesson progress details
         const progress = await api.getLessonProgress(username);
         console.log('Progress:', progress);
-
-        // Store user login status locally
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
-
-        // Navigate to Discovery page
         navigate('/discovery');
       } else {
         setError('Invalid credentials. Please try again.');
@@ -55,27 +46,27 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="username">Username</label>
-          <input 
-            type="text" 
-            id="username" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <div className="password-input-container">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              id="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
-            <button 
-              type="button" 
-              onClick={handleTogglePassword} 
+            <button
+              type="button"
+              onClick={handleTogglePassword}
               className="toggle-password-btn"
             >
               {showPassword ? 'Hide' : 'Show'}
@@ -83,7 +74,7 @@ const Login = () => {
           </div>
         </div>
         {error && <div className="error-message">{error}</div>}
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="login-btn" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
