@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './Login.css';
 
@@ -9,7 +9,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -38,7 +38,7 @@ const Login = () => {
         localStorage.setItem('username', username);
 
         // Navigate to Discovery page
-        history.push('/discovery');
+        navigate('/discovery');
       } else {
         setError('Invalid credentials. Please try again.');
       }
