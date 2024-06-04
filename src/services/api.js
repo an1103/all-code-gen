@@ -43,12 +43,13 @@ const api = {
 
     submitRecordedAudio: async (requestBody) => {
         try {
+            const asrApiKey = process.env.ASR_API_KEY;
             const API_ENDPOINT = 'https://api.dhruva.ai4bharat.org/services/inference/asr?serviceId=ai4bharat/conformer-multilingual-dravidian-gpu--t4';
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': '198ffb868c-a5e8-4cbb-b163-e28f7156bd24' // Replace YOUR_API_KEY with your actual API key
+                    'Authorization': asrApiKey // Replace YOUR_API_KEY with your actual API key
                 },
                 body: JSON.stringify(requestBody)
             });
