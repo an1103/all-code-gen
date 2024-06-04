@@ -23,14 +23,16 @@ const Discovery = () => {
   }, []);
 
   const handleNextLine = () => {
-    if (currentLineIndex < storyDetails.lines.length - 1) {
-      setCurrentLineIndex(currentLineIndex + 1);
-    }
+    setCurrentLineIndex(currentLineIndex + 1);
+    setApiResponse('');
+    setFeedback('');
+    setSessionResult(null);
   };
 
   const handleRetryLine = () => {
-    // Reset the current line
-    setCurrentLineIndex(currentLineIndex);
+    setApiResponse('');
+    setFeedback('');
+    setSessionResult(null);
   };
 
   const handleStartRecording = () => {
@@ -60,6 +62,9 @@ const Discovery = () => {
   const handleStopRecording = () => {
     if (audioRecorder) {
       audioRecorder.stop();
+      setApiResponse('');
+      setFeedback('');
+      setSessionResult(null);
     }
   };
 
@@ -118,20 +123,26 @@ const Discovery = () => {
   return (
     <div className="discovery-container">
       <h2>Discovery</h2>
-      <div className="story-content">
-        {/* Render story content based on contentType */}
-      </div>
+      {currentLineIndex < storyDetails.lines.length && (
+        <div className="story-card">
+          <p>{storyDetails.lines[currentLineIndex].text}</p>
+        </div>
+      )}
       <div className="controls">
-        <button onClick={handleNextLine} disabled={currentLineIndex >= storyDetails.lines.length - 1}>
+        <button onClick={handleNextLine} disabled={!apiResponse || isRecording || currentLineIndex === storyDetails.lines.length - 1}>
           Next Line
         </button>
-        <button onClick={handleRetryLine}>Retry</button>
+        <button onClick={handleRetryLine} disabled={isRecording}>
+          Retry
+        </button>
         {isRecording ? (
           <button onClick={handleStopRecording}>Stop Recording</button>
         ) : (
           <button onClick={handleStartRecording}>Start Recording</button>
         )}
-        <button onClick={handleSubmitRecording}>Submit Recording</button>
+        <button onClick={handleSubmitRecording} disabled={!recordedAudio}>
+          Submit Recording
+        </button>
       </div>
       {feedback && <div className="feedback">{feedback}</div>}
       {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}

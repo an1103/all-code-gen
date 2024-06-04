@@ -48,7 +48,7 @@ const api = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer YOUR_API_KEY' // Replace YOUR_API_KEY with your actual API key
+                    'Authorization': '198ffb868c-a5e8-4cbb-b163-e28f7156bd24' // Replace YOUR_API_KEY with your actual API key
                 },
                 body: JSON.stringify(requestBody)
             });
