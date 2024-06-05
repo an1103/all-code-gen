@@ -61,6 +61,27 @@ const api = {
         }
     },
 
+    updateLearnerProfile: async (profileData) => {
+        try {
+            const response = await fetch('https://www.learnerai-dev.theall.ai/lais/scores/updateLearnerProfile/en', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(profileData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update learner profile');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     submitRecordedAudio: async (requestBody) => {
         try {
             const asrApiKey = process.env.ASR_API_KEY;

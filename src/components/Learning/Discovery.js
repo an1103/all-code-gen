@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import Navbar from '../Navbar/Navbar'; // Import the Navbar component
+import Navbar from '../Navbar/Navbar';
 import './Discovery.css';
 
 const Discovery = () => {
@@ -15,10 +15,11 @@ const Discovery = () => {
   const [audioRecorder, setAudioRecorder] = useState(null);
   const [apiResponse, setApiResponse] = useState('');
 
-  // Assume the username is retrieved from localStorage
   const username = localStorage.getItem('username');
-  const userId = '2020076506'; // replace with actual user ID
-  const language = 'en'; // replace with actual language
+  const userId = '8635444062'; // replace with actual user ID
+  const sessionId = '86354440621701972584385'; // replace with actual session ID
+  const subSessionId = '86354440621701972584385'; // replace with actual sub-session ID
+  const language = 'en';
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
@@ -36,7 +37,6 @@ const Discovery = () => {
   };
 
   const handleRetryLine = () => {
-    // Reset the current line
     setCurrentLineIndex(currentLineIndex);
   };
 
@@ -73,33 +73,30 @@ const Discovery = () => {
   const handleSubmitRecording = async () => {
     if (recordedAudio) {
       const audioContent = await convertBlobToBase64(recordedAudio);
-      const requestBody = {
-        config: {
-          language: {
-            sourceLanguage: 'en-IN' // Adjust source language as needed
-          },
-          transcriptionFormat: {
-            value: 'transcript'
-          },
-          audioFormat: 'wav',
-          samplingRate: 16000 // Adjust sampling rate as needed
-        },
-        audio: [
-          {
-            audioContent: audioContent
-          }
-        ]
+      const originalText = storyDetails[currentLineIndex].contentSourceData[0].text;
+      const contentId = storyDetails[currentLineIndex].contentId;
+
+      const profileData = {
+        original_text: originalText,
+        audio: audioContent,
+        user_id: userId,
+        session_id: sessionId,
+        sub_session_id: subSessionId,
+        language: language,
+        date: new Date().toISOString(),
+        contentId: contentId,
+        contentType: 'Char',
       };
 
       try {
-        const response = await api.submitRecordedAudio(requestBody);
-        setApiResponse(response.transcript);
-        setFeedback('Transcription successful.');
+        const response = await api.updateLearnerProfile(profileData);
+        setApiResponse(response.msg);
+        setFeedback('Profile updated successfully.');
         setSessionResult('pass');
-        handleNextLine(); // Move to the next line after successful submission
+        handleNextLine();
       } catch (error) {
-        console.error('Error submitting recorded audio:', error);
-        setFeedback('Error submitting recorded audio.');
+        console.error('Error updating learner profile:', error);
+        setFeedback('Error updating learner profile.');
         setSessionResult('fail');
       }
     }
@@ -125,7 +122,7 @@ const Discovery = () => {
 
   return (
     <div>
-      <Navbar username={username} /> {/* Display Navbar with username */}
+      <Navbar username={username} />
       <div className="discovery-container">
         <div className="story-content">
           <p>{storyDetails[currentLineIndex].contentSourceData[0].text}</p>
