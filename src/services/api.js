@@ -3,7 +3,7 @@ const api = {
         // Simulating an API call for login
         return new Promise((resolve) => {
             setTimeout(() => {
-                if (username === 'test' && password === 'password') {
+                if (username === 'user' && password === 'password') {
                     resolve({ success: true });
                 } else {
                     resolve({ success: false });
@@ -39,6 +39,26 @@ const api = {
                 });
             }, 1000);
         });
+    },
+
+    fetchLearnerContent: async (userId, language) => {
+        try {
+            const response = await fetch(`https://www.learnerai-dev.theall.ai/lais/scores/GetContent/char/${userId}?language=${language}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch content');
+            }
+
+            const data = await response.json();
+            return data.content;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     },
 
     submitRecordedAudio: async (requestBody) => {

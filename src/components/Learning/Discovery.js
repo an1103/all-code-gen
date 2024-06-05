@@ -1,24 +1,28 @@
+// Discovery.js
+
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
+import Navbar from '../Navbar/Navbar'; // Import the Navbar component
 import './Discovery.css';
-import Navbar from '../Navbar/Navbar';
 
 const Discovery = () => {
-  const [storyDetails, setStoryDetails] = useState(null);
+  const [storyDetails, setStoryDetails] = useState([]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [sessionResult, setSessionResult] = useState(null);
-  const [contentType, setContentType] = useState('text');
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [audioRecorder, setAudioRecorder] = useState(null);
   const [apiResponse, setApiResponse] = useState('');
 
+  // Assume the username is retrieved from localStorage
   const username = localStorage.getItem('username');
+  const userId = '2020076506'; // replace with actual user ID
+  const language = 'en'; // replace with actual language
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
-      const data = await api.fetchStoryDetails('story-collection-id');
+      const data = await api.fetchLearnerContent(userId, language);
       setStoryDetails(data);
     };
 
@@ -26,16 +30,14 @@ const Discovery = () => {
   }, []);
 
   const handleNextLine = () => {
-    setCurrentLineIndex(currentLineIndex + 1);
-    setApiResponse('');
-    setFeedback('');
-    setSessionResult(null);
+    if (currentLineIndex < storyDetails.length - 1) {
+      setCurrentLineIndex(currentLineIndex + 1);
+    }
   };
 
   const handleRetryLine = () => {
-    setApiResponse('');
-    setFeedback('');
-    setSessionResult(null);
+    // Reset the current line
+    setCurrentLineIndex(currentLineIndex);
   };
 
   const handleStartRecording = () => {
@@ -65,9 +67,6 @@ const Discovery = () => {
   const handleStopRecording = () => {
     if (audioRecorder) {
       audioRecorder.stop();
-      setApiResponse('');
-      setFeedback('');
-      setSessionResult(null);
     }
   };
 
@@ -97,6 +96,7 @@ const Discovery = () => {
         setApiResponse(response.transcript);
         setFeedback('Transcription successful.');
         setSessionResult('pass');
+        handleNextLine(); // Move to the next line after successful submission
       } catch (error) {
         console.error('Error submitting recorded audio:', error);
         setFeedback('Error submitting recorded audio.');
@@ -119,35 +119,24 @@ const Discovery = () => {
     });
   };
 
-  if (!storyDetails) {
+  if (!storyDetails.length) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <Navbar username={username} />
+      <Navbar username={username} /> {/* Display Navbar with username */}
       <div className="discovery-container">
-        <h2>Discovery</h2>
-        {currentLineIndex < storyDetails.lines.length && (
-          <div className="story-card">
-            <p>{storyDetails.lines[currentLineIndex].text}</p>
-          </div>
-        )}
+        <div className="story-content">
+          <p>{storyDetails[currentLineIndex].contentSourceData[0].text}</p>
+        </div>
         <div className="controls">
-          <button onClick={handleNextLine} disabled={!apiResponse || isRecording || currentLineIndex === storyDetails.lines.length - 1}>
-            Next Line
-          </button>
-          <button onClick={handleRetryLine} disabled={isRecording}>
-            Retry
-          </button>
           {isRecording ? (
             <button onClick={handleStopRecording}>Stop Recording</button>
           ) : (
             <button onClick={handleStartRecording}>Start Recording</button>
           )}
-          <button onClick={handleSubmitRecording} disabled={!recordedAudio}>
-            Submit Recording
-          </button>
+          <button onClick={handleSubmitRecording} disabled={!recordedAudio || isRecording}>Submit Recording</button>
         </div>
         {feedback && <div className="feedback">{feedback}</div>}
         {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}
