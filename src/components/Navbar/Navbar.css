@@ -1,24 +1,24 @@
-/* Navbar.css */
-
-nav {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 0;
-}
-
-.navbar-container {
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.logo {
-    font-size: 24px;
-}
-
-.user-info {
-    font-size: 18px;
-}
+    background: rgba(255, 140, 0, 0.2); /* Almost transparent orange */
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .username {
+    font-weight: bold;
+    color: #333;
+  }
+  

@@ -1,9 +1,8 @@
-// Discovery.js
-
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import Navbar from '../Navbar/Navbar';
 import './Discovery.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Discovery = () => {
   const [storyDetails, setStoryDetails] = useState([]);
@@ -122,18 +121,24 @@ const Discovery = () => {
 
   return (
     <div>
-      <Navbar username={username} />
+      
       <div className="discovery-container">
         <div className="story-content">
           <p>{storyDetails[currentLineIndex].contentSourceData[0].text}</p>
         </div>
         <div className="controls">
           {isRecording ? (
-            <button onClick={handleStopRecording}>Stop Recording</button>
+            <button onClick={handleStopRecording} className="recording">
+              <i className="fas fa-stop"></i> Stop Recording
+            </button>
           ) : (
-            <button onClick={handleStartRecording}>Start Recording</button>
+            <button onClick={handleStartRecording} className="recording">
+              <i className="fas fa-microphone"></i> Start Recording
+            </button>
           )}
-          <button onClick={handleSubmitRecording} disabled={!recordedAudio || isRecording}>Submit Recording</button>
+          <button onClick={handleSubmitRecording} className="submit" disabled={!recordedAudio || isRecording}>
+            <i className="fas fa-upload"></i> Submit Recording
+          </button>
         </div>
         {feedback && <div className="feedback">{feedback}</div>}
         {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}
