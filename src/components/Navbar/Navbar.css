@@ -1,24 +1,27 @@
 /* Navbar.css */
 
-nav {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 0;
-}
-
-.navbar-container {
+.navbar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    padding: 10px 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ccc;
 }
 
-.logo {
-    font-size: 24px;
-}
-
-.user-info {
+.navbar-left {
     font-size: 18px;
+    color: black;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.language-button {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: black;
 }
