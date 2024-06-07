@@ -5,9 +5,10 @@
     background: rgba(255, 140, 0, 0.2); /* Almost transparent orange */
     padding: 10px 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: fixed;
+    position: absolute;
     width: 100%;
     top: 0;
+    right: 0;
     z-index: 1000;
   }
   
@@ -21,4 +22,5 @@
     font-weight: bold;
     color: #333;
   }
+
   

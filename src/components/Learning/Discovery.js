@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import Navbar from '../Navbar/Navbar';
 import './Discovery.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FaMicrophone, FaPlay, FaQuestion, FaStop, FaArrowLeft } from 'react-icons/fa';
 
 const Discovery = () => {
   const [storyDetails, setStoryDetails] = useState([]);
@@ -13,8 +12,9 @@ const Discovery = () => {
   const [feedback, setFeedback] = useState('');
   const [audioRecorder, setAudioRecorder] = useState(null);
   const [apiResponse, setApiResponse] = useState('');
+  const [timer, setTimer] = useState(30);
+  const [timerId, setTimerId] = useState(null);
 
-  const username = localStorage.getItem('username');
   const userId = '8635444062'; // replace with actual user ID
   const sessionId = '86354440621701972584385'; // replace with actual session ID
   const subSessionId = '86354440621701972584385'; // replace with actual sub-session ID
@@ -29,14 +29,33 @@ const Discovery = () => {
     fetchStoryDetails();
   }, []);
 
+  useEffect(() => {
+    if (timer === 0) {
+      handleNextLine();
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    if (timerId) {
+      clearInterval(timerId);
+    }
+    const id = setInterval(() => {
+      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+    }, 1000);
+    setTimerId(id);
+
+    return () => clearInterval(id);
+  }, [currentLineIndex]);
+
   const handleNextLine = () => {
     if (currentLineIndex < storyDetails.length - 1) {
       setCurrentLineIndex(currentLineIndex + 1);
+      setTimer(30);
     }
   };
 
   const handleRetryLine = () => {
-    setCurrentLineIndex(currentLineIndex);
+    setTimer(30);
   };
 
   const handleStartRecording = () => {
@@ -115,34 +134,59 @@ const Discovery = () => {
     });
   };
 
+  const handleHelpClick = () => {
+    alert('Instructions: Please read the sentence aloud and record your voice. Click "Next" to proceed.');
+  };
+
+  const handlePlayRecording = () => {
+    if (recordedAudio) {
+      const audioURL = URL.createObjectURL(recordedAudio);
+      const audio = new Audio(audioURL);
+      audio.play();
+    }
+  };
+
+  const handleBackClick = () => {
+    // Logic to go back to the login page
+    window.location.href = '/';
+  };
+
   if (!storyDetails.length) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      
+      <div className="back-button" onClick={handleBackClick}>
+        <FaArrowLeft />
+      </div>
       <div className="discovery-container">
+        <div className="timer">{timer}</div>
+        <div className="help-button" onClick={handleHelpClick}>
+          <FaQuestion />
+        </div>
         <div className="story-content">
           <p>{storyDetails[currentLineIndex].contentSourceData[0].text}</p>
         </div>
         <div className="controls">
-          {isRecording ? (
-            <button onClick={handleStopRecording} className="recording">
-              <i className="fas fa-stop"></i> Stop Recording
-            </button>
-          ) : (
-            <button onClick={handleStartRecording} className="recording">
-              <i className="fas fa-microphone"></i> Start Recording
+          {recordedAudio && !isRecording && (
+            <button className="play-button" onClick={handlePlayRecording}>
+              <FaPlay />
             </button>
           )}
-          <button onClick={handleSubmitRecording} className="submit" disabled={!recordedAudio || isRecording}>
-            <i className="fas fa-upload"></i> Submit Recording
-          </button>
+          {isRecording ? (
+            <button className="record-button" onClick={handleStopRecording}>
+              <FaStop />
+            </button>
+          ) : (
+            <button className="record-button" onClick={handleStartRecording}>
+              <FaMicrophone />
+            </button>
+          )}
         </div>
-        {feedback && <div className="feedback">{feedback}</div>}
-        {sessionResult && <div className={`result ${sessionResult}`}>{sessionResult === 'pass' ? 'Pass' : 'Fail'}</div>}
-        {apiResponse && <div className="api-response">{apiResponse}</div>}
+        <button className="next-button" onClick={handleSubmitRecording} disabled={!recordedAudio || isRecording}>
+          Next
+        </button>
       </div>
     </div>
   );
