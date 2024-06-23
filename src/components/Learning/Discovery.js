@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
-import './Discovery.css';
-import { FaMicrophone, FaPlay, FaQuestion, FaStop, FaArrowLeft } from 'react-icons/fa';
+import api from '../../services/api'; // Importing API service
+import Navbar from '../Navbar/Navbar.js'; // Importing Navbar component
+import './Discovery.css'; // Importing styles
 
 const Discovery = () => {
+  // Defining state variables
   const [storyDetails, setStoryDetails] = useState([]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [sessionResult, setSessionResult] = useState(null);
@@ -15,11 +16,14 @@ const Discovery = () => {
   const [timer, setTimer] = useState(30);
   const [timerId, setTimerId] = useState(null);
 
-  const userId = '8635444062'; // replace with actual user ID
-  const sessionId = '86354440621701972584385'; // replace with actual session ID
-  const subSessionId = '86354440621701972584385'; // replace with actual sub-session ID
+  // Hardcoded user information (should be replaced with actual values)
+  const username = localStorage.getItem('username');
+  const userId = '8635444062';
+  const sessionId = '86354440621701972584385';
+  const subSessionId = '86354440621701972584385';
   const language = 'en';
 
+  // Fetch story details on component mount
   useEffect(() => {
     const fetchStoryDetails = async () => {
       const data = await api.fetchLearnerContent(userId, language);
@@ -29,12 +33,14 @@ const Discovery = () => {
     fetchStoryDetails();
   }, []);
 
+  // Handle timer reaching zero
   useEffect(() => {
     if (timer === 0) {
       handleNextLine();
     }
   }, [timer]);
 
+  // Set up timer when current line changes
   useEffect(() => {
     if (timerId) {
       clearInterval(timerId);
@@ -47,17 +53,28 @@ const Discovery = () => {
     return () => clearInterval(id);
   }, [currentLineIndex]);
 
+  // Go to the next line in the story
   const handleNextLine = () => {
     if (currentLineIndex < storyDetails.length - 1) {
       setCurrentLineIndex(currentLineIndex + 1);
       setTimer(30);
+      resetRecordingState();
     }
   };
 
+  // Retry the current line
   const handleRetryLine = () => {
     setTimer(30);
+    resetRecordingState();
   };
 
+  // Reset recording state variables
+  const resetRecordingState = () => {
+    setRecordedAudio(null);
+    setIsRecording(false);
+  };
+
+  // Start audio recording
   const handleStartRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then((stream) => {
@@ -82,12 +99,14 @@ const Discovery = () => {
       });
   };
 
+  // Stop audio recording
   const handleStopRecording = () => {
     if (audioRecorder) {
       audioRecorder.stop();
     }
   };
 
+  // Submit recorded audio
   const handleSubmitRecording = async () => {
     if (recordedAudio) {
       const audioContent = await convertBlobToBase64(recordedAudio);
@@ -120,6 +139,7 @@ const Discovery = () => {
     }
   };
 
+  // Convert audio blob to base64 string
   const convertBlobToBase64 = (blob) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -134,10 +154,12 @@ const Discovery = () => {
     });
   };
 
+  // Display help instructions
   const handleHelpClick = () => {
     alert('Instructions: Please read the sentence aloud and record your voice. Click "Next" to proceed.');
   };
 
+  // Play recorded audio
   const handlePlayRecording = () => {
     if (recordedAudio) {
       const audioURL = URL.createObjectURL(recordedAudio);
@@ -146,47 +168,35 @@ const Discovery = () => {
     }
   };
 
-  const handleBackClick = () => {
-    // Logic to go back to the login page
-    window.location.href = '/';
-  };
-
-  if (!storyDetails.length) {
-    return <div>Loading...</div>;
-  }
-
+  // Render component
   return (
-    <div>
-      <div className="back-button" onClick={handleBackClick}>
-        <FaArrowLeft />
-      </div>
-      <div className="discovery-container">
-        <div className="timer">{timer}</div>
-        <div className="help-button" onClick={handleHelpClick}>
-          <FaQuestion />
+    <div className="discovery-container">
+      <Navbar username={username} />
+      <div className="content-card-discovery">
+        <div className="timer-container">
+          <div className="timer">{timer}</div>
+          <div className="timer-label">Timer</div>
         </div>
+        <div className="help-container">
+          <img src="/images/help-icon.png" className="help-button" onClick={handleHelpClick} alt="Help" />
+          <div className="help-label">Help</div>
+        </div>
+
         <div className="story-content">
-          <p>{storyDetails[currentLineIndex].contentSourceData[0].text}</p>
+          {storyDetails.length > 0 && storyDetails[currentLineIndex].contentSourceData[0].text}
+
+          <div className="controls">
+            {recordedAudio && !isRecording && (
+              <img src="/images/play-icon.png" className="icon-button" onClick={handlePlayRecording} alt="Play" />
+            )}
+            {isRecording ? ( /* Manual Changes */
+              <img src="/images/stop-icon.png" className="icon-button" onClick={handleStopRecording} alt="Stop" />
+            ) : ( /* Manual Changes */
+              <img src="/images/mic-icon.png" className="icon-button" onClick={handleStartRecording} alt="Record" />
+            )}
+          </div>
         </div>
-        <div className="controls">
-          {recordedAudio && !isRecording && (
-            <button className="play-button" onClick={handlePlayRecording}>
-              <FaPlay />
-            </button>
-          )}
-          {isRecording ? (
-            <button className="record-button" onClick={handleStopRecording}>
-              <FaStop />
-            </button>
-          ) : (
-            <button className="record-button" onClick={handleStartRecording}>
-              <FaMicrophone />
-            </button>
-          )}
-        </div>
-        <button className="next-button" onClick={handleSubmitRecording} disabled={!recordedAudio || isRecording}>
-          Next
-        </button>
+        <img src="/images/next-icon.png" className="next-button" onClick={handleSubmitRecording} alt="Next" disabled={!recordedAudio || isRecording} />
       </div>
     </div>
   );

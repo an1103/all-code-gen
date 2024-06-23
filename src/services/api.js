@@ -2,11 +2,11 @@ const api = {
     login: async (username, password) => {
         // Simulating an API call for login
         return new Promise((resolve) => {
-            setTimeout(() => {
-                if (username === 'user' && password === 'password') {
-                    resolve({ success: true });
-                } else {
+            setTimeout(() => { 
+                if (username === '' && password === '') {
                     resolve({ success: false });
+                } else {
+                    resolve({ success: true });
                 }
             }, 1000);
         });
@@ -38,6 +38,15 @@ const api = {
                     ],
                 });
             }, 1000);
+        });
+    },
+
+    getCoins: async (username) => {
+        // Simulating an API call to get coins
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ coins: 24 }); // Manual Changes
+          }, 1000);
         });
     },
 

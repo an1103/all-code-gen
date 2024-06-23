@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import './Login.css';
 
@@ -10,6 +11,13 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    // Log the user out and clear localStorage when the login page loads
+    logout();
+  }, []);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -29,7 +37,8 @@ const Login = () => {
         console.log('Progress:', progress);
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
-        navigate(`/discovery`);
+        login(); // Set the authenticated state
+        navigate(`/landing`);
       } else {
         setError('Invalid credentials. Please try again.');
       }

@@ -1,0 +1,75 @@
+/* General Styles */
+.landing-container {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom right, #2db2ff, #b1d5f8); /* Manual Changes */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: column; /* Manual Changes */
+    width: 100vw;
+}
+
+.content-card-landing {
+    background-image: url('/Users/dhanya/Desktop/EkStep/all-code-gen/public/images/background-landing.png'); /* Manual Changes */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 77vh; /* Manual Changes */
+    width: 100%;
+    max-width: 70vw; /* Manual Changes */
+    margin-top: 8vh;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Manual Changes */
+    justify-content: center;
+    position: relative;
+}
+
+.discovery-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.discovery-button img {
+    width: 100%;
+    max-width: 200px; /* Manual Changes */
+    height: auto;
+    transition: opacity 0.3s ease;
+    margin-left: 15vw;
+    margin-right: auto;
+}
+
+.discovery-button img:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .content-card-landing {
+        width: 95%;
+        height: 50vh; /* Manual Changes */
+        padding: 10px;
+    }
+
+    .discovery-button img {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-card-landing {
+        height: 45vh;
+        padding: 5px;
+    }
+
+    .discovery-button img {
+        max-width: 120px;
+    }
+}
