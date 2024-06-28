@@ -1,9 +1,12 @@
+const API_BASE_URL = 'https://www.learnerai-dev.theall.ai/all-orchestration-services/api';
+const LAIS_BASE_URL = 'https://www.learnerai-dev.theall.ai/lais/scores';
+
 const api = {
     login: async (username, password) => {
         // Simulating an API call for login
         return new Promise((resolve) => {
             setTimeout(() => {
-                if (username === 'user' && password === 'password') {
+                if (username === 'ans1' && password === '123') {
                     resolve({ success: true });
                 } else {
                     resolve({ success: false });
@@ -15,6 +18,27 @@ const api = {
     trackSession: () => {
         // Simulating tracking session
         console.log('Session tracking started');
+    },
+
+    generateVirtualID: async (username) => {
+        try {
+            const response = await fetch('https://www.learnerai-dev.theall.ai/all-orchestration-services/api/virtualId/generateVirtualID?username=ans1');
+            // const response = await fetch(`${API_BASE_URL}/virtualId/generateVirtualID?username=${username}`);
+            const data = await response.json();
+            return data.result.virtualID;
+        } catch (error) {
+            throw new Error('Failed to generate virtual ID');
+        }
+    },
+
+    getMilestone: async (virtualId, language) => {
+        try {
+            const response = await fetch(`${LAIS_BASE_URL}/getMilestone/user/${virtualId}?language=${language}`);
+            const data = await response.json();
+            return data.data.milestone_level;
+        } catch (error) {
+            throw new Error('Failed to get user milestone');
+        }
     },
 
     getLessonProgress: async (username) => {
@@ -73,30 +97,6 @@ const api = {
 
             if (!response.ok) {
                 throw new Error('Failed to update learner profile');
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-
-    submitRecordedAudio: async (requestBody) => {
-        try {
-            const asrApiKey = process.env.ASR_API_KEY;
-            const API_ENDPOINT = 'https://api.dhruva.ai4bharat.org/services/inference/asr?serviceId=ai4bharat/conformer-multilingual-dravidian-gpu--t4';
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': asrApiKey // Replace YOUR_API_KEY with your actual API key
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit recorded audio');
             }
 
             const data = await response.json();

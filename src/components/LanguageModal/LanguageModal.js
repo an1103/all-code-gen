@@ -5,7 +5,7 @@ import './LanguageModal.css';
 
 const LanguageModal = ({ selectedLanguage, onLanguageChange }) => {
   const [language, setLanguage] = useState(selectedLanguage);
-  const languages = ['English', 'Spanish', 'French', 'German'];
+  const languages = ['English', 'Tamil', 'Kannada', 'Other'];
 
   const handleConfirm = () => {
     onLanguageChange(language);

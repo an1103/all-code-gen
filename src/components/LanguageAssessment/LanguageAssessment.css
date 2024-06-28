@@ -1,0 +1,29 @@
+/* LanguageAssessment.css */
+
+.assessment-container {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.assessment-container h2 {
+    font-size: 24px;
+}
+
+.assessment-container p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.assessment-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.assessment-container button:hover {
+    background-color: #0056b3;
+}

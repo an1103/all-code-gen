@@ -1,3 +1,5 @@
+// Login.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -23,17 +25,30 @@ const Login = () => {
     try {
       const response = await api.login(username, password);
       if (response.success) {
-        alert('Login successful!');
+        // Track telemetry for the current session
         api.trackSession();
-        const progress = await api.getLessonProgress(username);
-        console.log('Progress:', progress);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username);
-        navigate(`/discovery`);
+
+        // Fetch virtual ID ===== not working =======
+        // const virtualId = await api.generateVirtualID('username');
+        const virtualId = '8635444062';
+
+        // Fetch user milestone level
+        const milestoneLevel = await api.getMilestone(virtualId, 'en');
+
+        // Check if user has completed the assessment
+        if (milestoneLevel === 'm0') {
+          console.log('Milestone m0');
+          // Redirect to language assessment page
+          navigate('/language-assessment');
+        } else {
+          // Redirect to Discovery page
+          navigate('/discovery');
+        }
       } else {
         setError('Invalid credentials. Please try again.');
       }
     } catch (err) {
+      console.log(err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
