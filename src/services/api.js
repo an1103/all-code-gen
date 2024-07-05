@@ -1,4 +1,11 @@
+// api.js
+let selectedLanguage = 'en'; // default language
+
 const api = {
+    setLanguage: (language) => {
+        selectedLanguage = language;
+    },
+
     login: async (username, password) => {
         // Simulating an API call for login
         return new Promise((resolve) => {
@@ -50,9 +57,9 @@ const api = {
         });
     },
 
-    fetchLearnerContent: async (userId, language) => {
+    fetchLearnerContent: async (userId) => {
         try {
-            const response = await fetch(`https://www.learnerai-dev.theall.ai/lais/scores/GetContent/char/${userId}?language=${language}`, {
+            const response = await fetch(`https://www.learnerai-dev.theall.ai/lais/scores/GetContent/sentence/${userId}?language=${selectedLanguage}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +79,7 @@ const api = {
 
     updateLearnerProfile: async (profileData) => {
         try {
-            const response = await fetch('https://www.learnerai-dev.theall.ai/lais/scores/updateLearnerProfile/en', {
+            const response = await fetch(`https://www.learnerai-dev.theall.ai/lais/scores/updateLearnerProfile/${selectedLanguage}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,4 +124,3 @@ const api = {
 };
 
 export default api;
-

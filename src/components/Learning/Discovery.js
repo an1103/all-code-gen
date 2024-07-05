@@ -21,12 +21,12 @@ const Discovery = () => {
   const userId = '8635444062';
   const sessionId = '86354440621701972584385';
   const subSessionId = '86354440621701972584385';
-  const language = 'en';
-
+  const selectedLanguage = localStorage.getItem('selectedLanguage') || 'English';
+  
   // Fetch story details on component mount
   useEffect(() => {
     const fetchStoryDetails = async () => {
-      const data = await api.fetchLearnerContent(userId, language);
+      const data = await api.fetchLearnerContent(userId);
       setStoryDetails(data);
     };
 
@@ -119,7 +119,7 @@ const Discovery = () => {
         user_id: userId,
         session_id: sessionId,
         sub_session_id: subSessionId,
-        language: language,
+        language: selectedLanguage,
         date: new Date().toISOString(),
         contentId: contentId,
         contentType: 'Char',
